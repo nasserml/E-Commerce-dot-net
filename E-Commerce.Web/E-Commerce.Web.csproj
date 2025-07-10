@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>E_Commerce.Web</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Seeding\brands.json" />
+    <Content Remove="wwwroot\Seeding\delivery.json" />
+    <Content Remove="wwwroot\Seeding\products.json" />
+    <Content Remove="wwwroot\Seeding\types.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\Seeding\brands.json" />
+    <None Include="wwwroot\Seeding\delivery.json" />
+    <None Include="wwwroot\Seeding\products.json" />
+    <None Include="wwwroot\Seeding\types.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.0-preview.5.25277.114">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Infrastructure\Persistence\Persistence.csproj" />
+    <ProjectReference Include="..\Presentations\Presentations.csproj" />
+  </ItemGroup>
+
+</Project>
