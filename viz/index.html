@@ -400,7 +400,7 @@
 const $=s=>document.querySelector(s);
 const SVG=$('#scene'), NS='http://www.w3.org/2000/svg';
 const CFG={vocab:4096,d:384,heads:8,hd:48,mult:4,hidden:1536,ctx:256,batch:32,accum:4,drop:0.1,loops:8,tubeZ:158,pitch:20,Cf:1210,rf:170,rd:95};
-C={data:'#fbbf24',bpe:'#f59e0b',tok:'#7d8faa',emb:'#34d399',pos:'#2dd4bf',stream:'#22d3ee',attn:'#60a5fa',ffn:'#fb923c',lp:'#f472b6',norm:'#c4b5fd',head:'#a855f7',logits:'#c084fc',loss:'#f87171'};
+const C={data:'#fbbf24',bpe:'#f59e0b',tok:'#7d8faa',emb:'#34d399',pos:'#2dd4bf',stream:'#22d3ee',attn:'#60a5fa',ffn:'#fb923c',lp:'#f472b6',norm:'#c4b5fd',head:'#a855f7',logits:'#c084fc',loss:'#f87171'};
 function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
 function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
 function lsRemove(k){try{localStorage.removeItem(k);}catch(e){}}
@@ -1242,9 +1242,21 @@ window.addEventListener('keydown',e=>{
   else if(e.key==='ArrowRight' && !e.target.closest('input')){ $('#tlNext').click(); }
 });
 
-// boot — fixed: loader hides after scene ready, not fixed timeout
-buildScene(); openPanel('overview'); setPlaying(true);
-requestAnimationFrame(t=>{anim.tPrev=t; requestAnimationFrame(frame);});
+// boot — fixed: loader hides after scene ready, not fixed timeout + robust error handling
+try{
+  buildScene(); openPanel('overview'); setPlaying(true);
+  requestAnimationFrame(t=>{anim.tPrev=t; requestAnimationFrame(frame);});
+}catch(e){
+  console.error('Boot error:', e);
+  const loader=document.getElementById('loader');
+  if(loader){
+    loader.querySelector('p').textContent='Error: '+e.message+' — check console';
+    loader.querySelector('.bar').style.display='none';
+  }
+  toast('Boot error: '+e.message,'⚠️');
+  // force hide loader after 2s even on error so user sees something
+  setTimeout(()=>{ const l=document.getElementById('loader'); if(l) l.classList.add('hide'); }, 2000);
+}
 $('#minimap').addEventListener('click',e=>{
   const r=e.currentTarget.getBoundingClientRect(); const x=(e.clientX-r.left)/r.width-0.5; const y=(e.clientY-r.top)/r.height-0.5;
   view.x=-x*800; view.y=-y*400; applyView();
