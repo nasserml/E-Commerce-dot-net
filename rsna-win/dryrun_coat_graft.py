@@ -30,6 +30,12 @@ import pandas as pd
 
 WIN = Path("/home/user/E-Commerce-dot-net/rsna-win/rsna-knee-win-blend.ipynb")
 WORK = Path("/kaggle/working")
+if not WORK.exists():
+    # resets drop /kaggle; recreate it (best effort, mirrors the Kaggle runtime)
+    import subprocess as _sp
+    _sp.run(["sudo", "-n", "mkdir", "-p", str(WORK)], check=False)
+    _sp.run(["sudo", "-n", "chown", "-R", __import__("getpass").getuser(), "/kaggle"],
+            check=False)
 FAKE = Path("/tmp/fake_kaggle_input")
 
 LABELS = ["ACL", "MCL", "Medial Meniscus", "Lateral Meniscus", "Medial OA",

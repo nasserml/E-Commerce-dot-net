@@ -20,6 +20,17 @@ WIN = ROOT / 'rsna-win'
 REF = ROOT.parent / 'rsna-ntequas' / 'out' / 'notebook_blend_full.ipynb'
 OUT = WIN / 'rsna-knee-win-blend.ipynb'
 
+if not REF.exists():
+    # workspace resets drop everything outside the repo; re-fetch the reference
+    import subprocess as _sp
+    repo = REF.parent.parent
+    print(f'[build] reference missing; cloning NTejas-1 into {repo} ...')
+    _sp.run(['git', 'clone', '--depth', '1',
+             'https://github.com/NTejas-1/RSNA-Knee-Abnormality-Detection.git',
+             str(repo)], check=True)
+    if not REF.exists():
+        raise SystemExit(f'reference still missing after clone: {REF}')
+
 def set_source(cell, text):
     src = text.splitlines(keepends=True)
     if src and src[-1] and not src[-1].endswith('\n'):
