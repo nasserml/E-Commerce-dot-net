@@ -153,7 +153,11 @@ s = graft(
             with torch.cuda.device(0):
                 run_shared_maxspan(torch.device('cuda:0'))
                 if len(arms) > 4:
-                    run_single(4, torch.device('cuda:0'))
+                    try:
+                        run_single(4, torch.device('cuda:0'))
+                    except Exception as arm4_error:
+                        rsna_event('raptor_arm_failed', arm=str(arms[4]['name']), error=f'{type(arm4_error).__name__}: {str(arm4_error)[:500]}')
+                        print(f'[raptor-fast] arm {arms[4]["name"]} unavailable; neutral fill keeps the blend: {arm4_error}', flush=True)
 
         def gpu_one():
             with torch.cuda.device(1):
@@ -170,7 +174,11 @@ s = graft(
             run_single(1, torch.device('cuda:0'))
             run_single(3, torch.device('cuda:0'))
             if len(arms) > 4:
-                run_single(4, torch.device('cuda:0'))
+                try:
+                    run_single(4, torch.device('cuda:0'))
+                except Exception as arm4_error:
+                    rsna_event('raptor_arm_failed', arm=str(arms[4]['name']), error=f'{type(arm4_error).__name__}: {str(arm4_error)[:500]}')
+                    print(f'[raptor-fast] arm {arms[4]["name"]} unavailable; neutral fill keeps the blend: {arm4_error}', flush=True)
         for worker in workers:
             worker.result()''')
 
